@@ -1,6 +1,6 @@
 // 1. CONEXIÓN: Usa los datos de tu pantalla de Supabase (Project URL y API Key anon)
 const SUPABASE_URL = "https://opzzggqgspjonzgkorot.supabase.co"; 
-const SUPABASE_KEY = "TU_LLAVE_ANON_AQUÍ";
+const SUPABASE_KEY = "sb_publishable_tF3Boa0ln8ZjFiH663jF_g_wu3NpjDv";
 
 const { createClient } = supabase;
 const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
