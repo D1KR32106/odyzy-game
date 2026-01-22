@@ -28,18 +28,21 @@ loginBtn.addEventListener('click', async () => {
 });
 
 async function buscarPartida(userId) {
+    // CAMBIO: Usamos maybeSingle() para que el código siga adelante si la lista está vacía
     const { data: partida } = await _supabase
         .from('partidas')
         .select('*')
         .eq('estado', 'esperando')
-        .limit(1).single();
+        .maybeSingle();
 
     if (partida) {
+        // Encontramos una partida, nos unimos como jugador 2
         partidaId = partida.id;
         miRol = 'jugador_2';
         await _supabase.from('partidas').update({ jugador_2_id: userId, estado: 'jugando' }).eq('id', partidaId);
         tg.showAlert("¡Rival encontrado! Haz tu jugada.");
     } else {
+        // No hay partidas, creamos una nueva como jugador 1
         miRol = 'jugador_1';
         const { data: nueva } = await _supabase.from('partidas').insert([{ jugador_1_id: userId, estado: 'esperando' }]).select().single();
         partidaId = nueva.id;
@@ -51,7 +54,8 @@ async function buscarPartida(userId) {
 // 3. ENVIAR JUGADA
 document.querySelectorAll('.choice-btn').forEach(boton => {
     boton.addEventListener('click', async () => {
-        const eleccion = boton.innerText; // Guarda el emoji
+        if (!partidaId) return;
+        const eleccion = boton.innerText; 
         const campo = (miRol === 'jugador_1') ? 'jugada_1' : 'jugada_2';
 
         await _supabase.from('partidas').update({ [campo]: eleccion }).eq('id', partidaId);
